@@ -22,7 +22,7 @@ function serve(port: number) {
     const requestUrl = new URL(req.url);
     const resourcePath = requestUrl.pathname;
 
-    console.log(`\n- ${resourcePath}`);
+    console.log(`  ${resourcePath}  `);
 
     switch (resourcePath) {
       case '/api/restart': console.log('Restarting...\n\n');
@@ -58,7 +58,6 @@ function getResource(resourcePath: string, root: string = '') {
   const filePath = Path
     .join(root, ...filteredPath);
 
-  console.log(`  ${filePath}`);
   return Deno.readFileSync(filePath);
 }
 
