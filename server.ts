@@ -20,15 +20,17 @@ const absolutePaths: { [key: string]: string } = {
 function serve(port: number) {
   return Server.serve(function (req: Request) {
     const requestUrl = new URL(req.url);
-    const resourcePath = requestUrl.pathname;
+    const resourcePath = decodeURI(requestUrl.pathname);
 
     console.log(`  ${resourcePath}  `);
 
     switch (resourcePath) {
       case '/api/restart': console.log('Restarting...\n\n');
         return exit(2, 'Restarting server.');
-      case '/api/shutdown': console.log('Shuttin down...\n\n');
+      case '/api/shutdown': console.log('Shutting down...\n\n');
         return exit(0, 'Shutting down server.');
+      case '/api/list':
+        return listing();
       default:
         return processPath(resourcePath);
     }
@@ -59,6 +61,22 @@ function getResource(resourcePath: string, root: string = '') {
     .join(root, ...filteredPath);
 
   return Deno.readFileSync(filePath);
+}
+
+async function listing() {
+  const entries: string[] = [];
+  await listDir('', entries);
+  return new Response(JSON.stringify(entries));
+}
+
+async function listDir(path: string, entries: string[]) {
+  for await (const dirEntry of Deno.readDir(`./public${path}`)) {
+    if (dirEntry.isDirectory) {
+      await listDir(`${path}/${dirEntry.name}`, entries);
+    } else if (dirEntry.isFile) {
+      entries.push(`${path}/${dirEntry.name}`);
+    }
+  }
 }
 
 
