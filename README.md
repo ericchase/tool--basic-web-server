@@ -1,5 +1,5 @@
-# deno--simple-test-server
-[unlicensed] Simple web server for test environment using Deno
+# deno--basic-web-server
+[unlicensed] Basic web server for test environment using Deno
 
 
 Features
