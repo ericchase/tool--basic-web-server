@@ -44,9 +44,10 @@ function exit(code: number, message: string) {
 
 function processPath(resourcePath: string) {
   try {
-    if (resourcePath in absolutePaths)
-      return new Response(getResource(absolutePaths[resourcePath]));
-    return new Response(getResource(resourcePath, 'public'));
+    const { body, init } = resourcePath in absolutePaths
+      ? getResource(absolutePaths[resourcePath])
+      : getResource(resourcePath, 'public');
+    return new Response(body, init);
   } catch (_) { }
   return new Response('File not found', { status: 404 });
 }
@@ -60,7 +61,29 @@ function getResource(resourcePath: string, root: string = '') {
   const filePath = Path
     .join(root, ...filteredPath);
 
-  return Deno.readFileSync(filePath);
+  return {
+    'body': Deno.readFileSync(filePath),
+    'init': {
+      headers: {
+        'Content-Type': getContentType(filePath),
+      }
+    }
+  };
+}
+
+function getContentType(filePath: string) {
+  const ext = Path.extname(filePath);
+  switch (ext) {
+    case '.html': return 'text/html';
+    case '.css': return 'text/css';
+    case '.js': return 'text/javascript';
+    case '.png': return 'image/png';
+    case '.jpg': return 'image/jpeg';
+    case '.gif': return 'image/gif';
+    case '.svg': return 'image/svg+xml';
+    case '.ico': return 'image/x-icon';
+    default: return 'text/plain';
+  }
 }
 
 async function listing() {
