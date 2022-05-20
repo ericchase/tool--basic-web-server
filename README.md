@@ -7,7 +7,7 @@ Features
 - Auto-increment when preferred **port** in use
 - Automatic file serving from **public** directory
   - URL path normalization and filtering
-- Sends proper MIME types for html, css, js, png, jpg, gif, svg, ico file extensions
+- Proper MIME types for html, css, js, png, jpg, gif, svg, ico file extensions
 
 
 Powershell Script
@@ -16,5 +16,5 @@ Powershell Script
 - Pause on errors
 - Auto restart on exit code 1
 - Quit on exit code 0
-- Looks for local copy of Deno executable
+- Look for Deno executable in root folder and path
 
