@@ -7,7 +7,7 @@ Features
 - Auto-increment when preferred **port** in use
 - Automatic file serving from **public** directory
   - URL path normalization and filtering
-- Sends proper MIME types for a certain file extensions
+- Sends proper MIME types for html, css, js, png, jpg, gif, svg, ico file extensions
 
 
 Powershell Script
