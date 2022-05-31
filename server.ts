@@ -11,8 +11,6 @@ const preferredPort = Number.parseInt(Deno.env.get('PORT') || '8000');
 // Set files to directly serve
 const absolutePaths: { [key: string]: string } = {
   '/': './console.html',
-  '/console.css': './console.css',
-  '/console.js': './console.js',
 };
 
 

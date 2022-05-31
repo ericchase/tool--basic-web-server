@@ -7,9 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <title>Console</title>
-    <link rel="stylesheet" href="console.css">
-    <script src="console.js" defer></script>
 </head>
+
+<style>
+    body {
+        color: #333;
+        /* display: flex; */
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.42857143;
+        margin: 20px 30px;
+    }
+
+    .row {
+        display: flex;
+        gap: 5px;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+</style>
 
 <body>
     <div class="row">
@@ -28,5 +48,50 @@
         </div>
     </div>
 </body>
+
+<script>
+    function refresh(ms) {
+        setTimeout("location.reload(true);", ms);
+    }
+
+
+    const restartDiv = document.getElementById('restart');
+
+    restartDiv.addEventListener('click', () => {
+        fetch('/api/restart');
+        document.getElementById('status').innerText = 'Restarting...';
+        restartDiv.remove();
+        shutdownDiv.remove();
+        refresh(500);
+    });
+
+
+    const shutdownDiv = document.getElementById('shutdown');
+
+    shutdownDiv.addEventListener('click', () => {
+        fetch('/api/shutdown');
+        document.getElementById('status').innerText = 'Shutting down...';
+        restartDiv.remove();
+        shutdownDiv.remove();
+
+        const refreshButton = document.createElement('button');
+        refreshButton.innerText = 'Refresh';
+        refreshButton.addEventListener('click', () => refresh(0));
+        document.body.querySelector('div').append();
+    });
+
+
+    const fileListDiv = document.getElementById('file-list');
+
+    fetch('/api/list')
+        .then(response => response.json())
+        .then(json => {
+            json.forEach(path => {
+                const resourceDiv = document.createElement('div');
+                resourceDiv.innerHTML = `<a href="${path}">${path}</a>`;
+                fileListDiv.appendChild(resourceDiv);
+            });
+        });
+</script>
 
 </html>
