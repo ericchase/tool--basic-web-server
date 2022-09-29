@@ -29,12 +29,13 @@
         flex-direction: column;
         gap: 5px;
     }
+
 </style>
 
 <body>
     <div class="row">
         <div class="column">
-            <a href="http://localhost:8000/">http://localhost:8000/</a>
+            <a id="self-link" href="http://localhost:8000/">http://localhost:8000/</a>
             <span id="status">Server running!</span>
             <button id="restart">Restart</button>
             <button id="shutdown">Shutdown</button>
@@ -50,6 +51,12 @@
 </body>
 
 <script>
+    const url = `${location.protocol}//${location.host}`;
+    const self_link = document.querySelector('#self-link');
+    self_link.setAttribute('href', url);
+    self_link.innerText = self_link;
+
+
     function refresh(ms) {
         setTimeout("location.reload(true);", ms);
     }
