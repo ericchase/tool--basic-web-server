@@ -1,39 +1,36 @@
 // deno run --allow-env=PORT --allow-net --allow-read server.ts
 // docs: https://deno.land/std/http
-import * as Server from 'https://deno.land/std/http/server.ts';
-import * as Path from 'https://deno.land/std@0.139.0/path/mod.ts';
+import { Server, type ServerInit } from 'https://deno.land/std/http/server.ts';
+import * as Path from 'https://deno.land/std/path/mod.ts';
 
 
 // Set the port to listen on
-const preferredPort = Number.parseInt(Deno.env.get('PORT') || '8000');
-
+const preferredPort = Number.parseInt(Deno.env.get('PORT') ?? '8000');
 
 // Set files to directly serve
 const absolutePaths: { [key: string]: string } = {
   '/': './console.html',
 };
 
+// Set special endpoints
+function handler(request: Request) {
+  const requestUrl = new URL(request.url);
+  const resourcePath = decodeURI(requestUrl.pathname);
 
+  console.log(`  ${resourcePath}  `);
 
-function serve(port: number) {
-  return Server.serve(function (req: Request) {
-    const requestUrl = new URL(req.url);
-    const resourcePath = decodeURI(requestUrl.pathname);
-
-    console.log(`  ${resourcePath}  `);
-
-    switch (resourcePath) {
-      case '/api/restart': console.log('Restarting...\n\n');
-        return exit(2, 'Restarting server.');
-      case '/api/shutdown': console.log('Shutting down...\n\n');
-        return exit(0, 'Shutting down server.');
-      case '/api/list':
-        return listing();
-      default:
-        return processPath(resourcePath);
-    }
-  }, { port })
+  switch (resourcePath) {
+    case '/api/restart': console.log('Restarting...\n\n');
+      return exit(2, 'Restarting server.');
+    case '/api/shutdown': console.log('Shutting down...\n\n');
+      return exit(0, 'Shutting down server.');
+    case '/api/list':
+      return listing();
+    default:
+      return processPath(resourcePath);
+  }
 }
+
 
 function exit(code: number, message: string) {
   setTimeout(() => Deno.exit(code), 100);
@@ -100,18 +97,23 @@ async function listDir(path: string, entries: string[]) {
   }
 }
 
-
-
-async function tryServe(port: number) {
-  serve(port).catch((err: any) => {
-    if (err instanceof Deno.errors.AddrInUse) tryNextPort(port);
+async function tryServe(port: number, handler: ServerInit) {
+  try {
+    const listener = Deno.listen({ port });
+    console.log(`Listening on http://${listener.addr.hostname === "0.0.0.0" ? "localhost" : listener.addr.hostname}:${listener.addr.port}`);
+    await new Server({ handler }).serve(listener);
+  } catch (err) {
+    if (err instanceof Deno.errors.AddrInUse)
+      tryNextPort(port, handler, `Port ${port} is already in use.`);
+    else if (err instanceof Deno.errors.PermissionDenied)
+      tryNextPort(port + 99, handler, `Permission denied when accessing port ${port}.`);
     else throw err;
-  });
+  }
 }
 
-function tryNextPort(port: number) {
-  console.log(`Port ${port} is already in use.\n`);
-  setTimeout(() => tryServe(port + 1), 100);
+function tryNextPort(port: number, handler: ServerInit, message: string) {
+  console.log(`${message}`);
+  setTimeout(() => tryServe(port + 1, handler), 100);
 }
 
-tryServe(preferredPort);
+tryServe(preferredPort, handler);
