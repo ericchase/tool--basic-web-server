@@ -12,7 +12,7 @@ Features
 
 Deno
 
-- Grab the proper executable for your machine from
+- Grab the proper executable for your device here:
   - [https://github.com/denoland/deno/releases](https://github.com/denoland/deno/releases)
 
 
@@ -32,5 +32,5 @@ Powershell Script
 
 **Notes**
 
-- Batch and Powershell scripts only run on Windows machines
+- Batch and Powershell scripts only run on Windows devices
 
