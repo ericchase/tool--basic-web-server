@@ -1,15 +1,14 @@
 // deno run --allow-env=PORT --allow-net --allow-read server.ts
 // docs: https://deno.land/std/http
-import { Server, type ServerInit } from 'https://deno.land/std/http/server.ts';
-import * as Path from 'https://deno.land/std/path/mod.ts';
+import { Server } from "https://deno.land/std/http/server.ts";
+import * as path from "https://deno.land/std/path/mod.ts";
 
+// Set port to listen on
+const preferredPort = Number.parseInt(Deno.env.get("PORT") ?? "8000");
 
-// Set the port to listen on
-const preferredPort = Number.parseInt(Deno.env.get('PORT') ?? '8000');
-
-// Set files to directly serve
+// Set files to serve directly
 const absolutePaths: { [key: string]: string } = {
-  '/': './console.html',
+  "/": "./console.html",
 };
 
 // Set special endpoints
@@ -20,17 +19,32 @@ function handler(request: Request) {
   console.log(`  ${resourcePath}  `);
 
   switch (resourcePath) {
-    case '/api/restart': console.log('Restarting...\n\n');
-      return exit(2, 'Restarting server.');
-    case '/api/shutdown': console.log('Shutting down...\n\n');
-      return exit(0, 'Shutting down server.');
-    case '/api/list':
+    case "/api/restart":
+      console.log("Restarting...\n\n");
+      return exit(2, "Restarting server.");
+    case "/api/shutdown":
+      console.log("Shutting down...\n\n");
+      return exit(0, "Shutting down server.");
+    case "/api/list":
       return listing();
     default:
       return processPath(resourcePath);
   }
 }
 
+async function tryServe(port: number) {
+  try {
+    const server = new Server({ port, handler });
+    console.log(`Listening on http://localhost:${port}/`);
+    await server.listenAndServe();
+  } catch (err) {
+    if (err instanceof Deno.errors.AddrInUse) {
+      tryNextPort(port, `Port ${port} is already in use.`);
+    } else if (err instanceof Deno.errors.PermissionDenied) {
+      tryNextPort(port + 99, `Permission denied when accessing port ${port}.`);
+    } else throw err;
+  }
+}
 
 function exit(code: number, message: string) {
   setTimeout(() => Deno.exit(code), 100);
@@ -41,49 +55,60 @@ function processPath(resourcePath: string) {
   try {
     const { body, init } = resourcePath in absolutePaths
       ? getResource(absolutePaths[resourcePath])
-      : getResource(resourcePath, 'public');
+      : getResource(resourcePath, "public");
     return new Response(body, init);
-  } catch (_) { }
-  return new Response('File not found', { status: 404 });
+  } catch (_) {
+    _;
+  }
+  return new Response("File not found", { status: 404 });
 }
 
-function getResource(resourcePath: string, root: string = '') {
-  const filteredPath = Path
+function getResource(resourcePath: string, root = "") {
+  const filteredPath = path
     .normalize(resourcePath)
-    .split(Path.sep)
-    .filter((s: string) => s !== '.' && s !== '..');
+    .split(path.sep)
+    .filter((s: string) => s !== "." && s !== "..");
 
-  const filePath = Path
+  const filePath = path
     .join(root, ...filteredPath);
 
   return {
-    'body': Deno.readFileSync(filePath),
-    'init': {
+    "body": Deno.readFileSync(filePath),
+    "init": {
       headers: {
-        'Content-Type': getContentType(filePath),
-      }
-    }
+        "Content-Type": getContentType(filePath),
+      },
+    },
   };
 }
 
 function getContentType(filePath: string) {
-  const ext = Path.extname(filePath);
+  const ext = path.extname(filePath);
   switch (ext) {
-    case '.html': return 'text/html';
-    case '.css': return 'text/css';
-    case '.js': return 'text/javascript';
-    case '.png': return 'image/png';
-    case '.jpg': return 'image/jpeg';
-    case '.gif': return 'image/gif';
-    case '.svg': return 'image/svg+xml';
-    case '.ico': return 'image/x-icon';
-    default: return 'text/plain';
+    case ".html":
+      return "text/html";
+    case ".css":
+      return "text/css";
+    case ".js":
+      return "text/javascript";
+    case ".png":
+      return "image/png";
+    case ".jpg":
+      return "image/jpeg";
+    case ".gif":
+      return "image/gif";
+    case ".svg":
+      return "image/svg+xml";
+    case ".ico":
+      return "image/x-icon";
+    default:
+      return "text/plain";
   }
 }
 
 async function listing() {
   const entries: string[] = [];
-  await listDir('', entries);
+  await listDir("", entries);
   return new Response(JSON.stringify(entries));
 }
 
@@ -97,23 +122,9 @@ async function listDir(path: string, entries: string[]) {
   }
 }
 
-async function tryServe(port: number, handler: ServerInit) {
-  try {
-    const listener = Deno.listen({ port });
-    console.log(`Listening on http://${listener.addr.hostname === "0.0.0.0" ? "localhost" : listener.addr.hostname}:${listener.addr.port}`);
-    await new Server({ handler }).serve(listener);
-  } catch (err) {
-    if (err instanceof Deno.errors.AddrInUse)
-      tryNextPort(port, handler, `Port ${port} is already in use.`);
-    else if (err instanceof Deno.errors.PermissionDenied)
-      tryNextPort(port + 99, handler, `Permission denied when accessing port ${port}.`);
-    else throw err;
-  }
-}
-
-function tryNextPort(port: number, handler: ServerInit, message: string) {
+function tryNextPort(port: number, message: string) {
   console.log(`${message}`);
-  setTimeout(() => tryServe(port + 1, handler), 100);
+  setTimeout(() => tryServe(port + 1), 100);
 }
 
-tryServe(preferredPort, handler);
+tryServe(preferredPort);
