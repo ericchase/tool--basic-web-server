@@ -3,15 +3,33 @@
 import { Server } from "https://deno.land/std/http/server.ts";
 import * as path from "https://deno.land/std/path/mod.ts";
 
+// Add MIME types
+function getMIMEType(filePath: string) {
+  const ext = path.extname(filePath);
+  switch (ext) {
+    case ".css":  /**/ return "text/css";
+    case ".gif":  /**/ return "image/gif";
+    case ".html": /**/ return "text/html";
+    case ".ico":  /**/ return "image/x-icon";
+    case ".jpg":  /**/ return "image/jpeg";
+    case ".js":   /**/ return "text/javascript";
+    case ".mp4":  /**/ return "video/mp4";
+    case ".png":  /**/ return "image/png";
+    case ".svg":  /**/ return "image/svg+xml";
+    default:
+      return "text/plain";
+  }
+}
+
 // Set port to listen on
 const preferredPort = Number.parseInt(Deno.env.get("PORT") ?? "8000");
 
-// Set files to serve directly
+// Add files to serve directly
 const absolutePaths: { [key: string]: string } = {
   "/": "./console.html",
 };
 
-// Set special endpoints
+// Add custom API endpoints
 function handler(request: Request) {
   const requestUrl = new URL(request.url);
   const resourcePath = decodeURI(requestUrl.pathname);
@@ -31,6 +49,8 @@ function handler(request: Request) {
       return processPath(resourcePath);
   }
 }
+
+// Server functions below this line
 
 async function tryServe(port: number) {
   try {
@@ -75,35 +95,11 @@ function getResource(resourcePath: string, root = "") {
   return {
     "body": Deno.readFileSync(filePath),
     "init": {
-      headers: {
-        "Content-Type": getContentType(filePath),
+      "headers": {
+        "Content-Type": getMIMEType(filePath),
       },
     },
   };
-}
-
-function getContentType(filePath: string) {
-  const ext = path.extname(filePath);
-  switch (ext) {
-    case ".html":
-      return "text/html";
-    case ".css":
-      return "text/css";
-    case ".js":
-      return "text/javascript";
-    case ".png":
-      return "image/png";
-    case ".jpg":
-      return "image/jpeg";
-    case ".gif":
-      return "image/gif";
-    case ".svg":
-      return "image/svg+xml";
-    case ".ico":
-      return "image/x-icon";
-    default:
-      return "text/plain";
-  }
 }
 
 async function listing() {
