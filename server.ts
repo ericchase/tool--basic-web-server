@@ -4,8 +4,7 @@ import { Server } from "https://deno.land/std/http/server.ts";
 import * as path from "https://deno.land/std/path/mod.ts";
 
 // Add MIME types
-function getMIMEType(filePath: string) {
-  const ext = path.extname(filePath);
+function getMIMEType(ext: string) {
   switch (ext) {
     case ".css":  /**/ return "text/css";
     case ".gif":  /**/ return "image/gif";
@@ -89,14 +88,32 @@ function getResource(resourcePath: string, root = "") {
     .split(path.sep)
     .filter((s: string) => s !== "." && s !== "..");
 
+  const response = { body: "", mimetype: "" };
+
   const filePath = path
     .join(root, ...filteredPath);
+  const fileExt = path
+    .extname(filePath);
+
+  // Try to read file. If the file doesn't exist and the path does not contain
+  // a file extension, add '.js' as the file extension, and try again. Possibly
+  // do this with '.ts' as well.
+  // WARNING: I'm not sure how this is implemented in production servers.
+  try {
+    response.body = Deno.readFileSync(filePath);
+    response.mimetype = getMIMEType(fileExt);
+  } catch (e) {
+    if (fileExt.length === 0) {
+      response.body = Deno.readFileSync(filePath + '.js');
+      response.mimetype = getMIMEType('.js');
+    }
+  }
 
   return {
-    "body": Deno.readFileSync(filePath),
+    "body": response.body,
     "init": {
       "headers": {
-        "Content-Type": getMIMEType(filePath),
+        "Content-Type": response.mimetype,
       },
     },
   };
