@@ -29,10 +29,6 @@
         flex-direction: column;
         gap: 5px;
     }
-
-    .spacer {
-        height: 10px;
-    }
 </style>
 
 <body>
@@ -41,12 +37,11 @@
             <a id="self-link" href="http://localhost:8000/">http://localhost:8000/</a>
             <span id="status">Server running!</span>
             <button id="restart">Restart</button>
-            <div class="spacer"></div>
+            <div class="vspace-10"></div>
             <button id="shutdown">Shutdown</button>
         </div>
     </div>
-    <br />
-    <br />
+    <div class="vspace-30"></div>
     <div class="row">
         <div class="column">
             <div id="file-list"></div>
@@ -102,6 +97,24 @@
                 resourceDiv.innerHTML = `<a href="${path}">${path}</a>`;
                 fileListDiv.appendChild(resourceDiv);
             });
+        });
+
+
+    // add height to 'vspace-' divs
+    Array.from(document.querySelectorAll('[class*="vspace-"]'))
+        .forEach(el => {
+            const [_, size] = Array.from(el.classList)
+                .find(name => name.startsWith("vspace-"))
+                .split('-');
+            el.style.setProperty('height', `${size}px`);
+        });
+    // add width to 'hspace-' divs
+    Array.from(document.querySelectorAll('[class*="hspace-"]'))
+        .forEach(el => {
+            const [_, size] = Array.from(el.classList)
+                .find(name => name.startsWith("hspace-"))
+                .split('-');
+            el.style.setProperty('width', `${size}px`);
         });
 </script>
 
