@@ -40,7 +40,7 @@ function handleOptionsRequest(request: Request): Response | Promise<Response> {
 // Add GET endpoints
 function handleGetRequest(request: Request): Response | Promise<Response> {
     const requestedResource = decodeURI((new URL(request.url)).pathname);
-    console.log(`GET  ${requestedResource}`);
+    console.log(`GET      ${requestedResource}`);
     switch (requestedResource) {
         case "/api/restart":
             console.log("Restarting...\n\n");
@@ -61,11 +61,11 @@ function handleGetRequest(request: Request): Response | Promise<Response> {
 // Add POST endpoints
 function handlePostRequest(request: Request): Response | Promise<Response> {
     const requestedResource = decodeURI((new URL(request.url)).pathname);
-    console.log(`POST  ${requestedResource}`);
-    console.log(`HEADERS`);
-    for (const [k, v] of request.headers) {
-        console.log(`    ${k}: ${v}`);
-    }
+    console.log(`POST     ${requestedResource}`);
+    // console.log(`HEADERS`);
+    // for (const [k, v] of request.headers) {
+    //     console.log(`    ${k}: ${v}`);
+    // }
     switch (requestedResource) {
         case "/database":
             // Example case of dealing with a public database?

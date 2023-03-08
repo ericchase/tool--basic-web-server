@@ -9,39 +9,40 @@
 </head>
 
 <body>
+    <div style="color:green;">// Check the Dev-Tools Console and Network tabs</div>
+    <br>
+    <div>Try opening this file directly in your browser while the server is running!</div>
+    <div>By doing this, the browser will be accessing server files from a different origin, resulting in CORS Preflight checks.</div>
+    <div>You will see this as an OPTIONS request in Console and Network tabs of Dev-Tools.</div>
+
+
     <script>
         (async function () {
             try {
-                await fetch('http://localhost:8000/database', {
-                    method: "GET"
-                })
-                    .then(async response => {
-                        // we expect this to fail, because our fake database allows POST requests only
-                        if (response.headers.get('content-type').includes('application/json')) {
-                            console.log('json:', await response.json());
-                        }
-                        else {
-                            console.log('text:', await response.text());
-                        }
-                    });
+                console.log('Try GET Request');
+                // we expect this to fail, because our fake database allows POST requests only
+                const response = await fetch('http://localhost:8000/database', { method: "GET" })
+                if (response.headers.get('content-type').includes('application/json')) {
+                    console.log('-- JSON:', await response.json());
+                } else {
+                    console.log('-- TEXT:', await response.text());
+                }
             } catch (err) { }
 
             try {
-                await fetch('http://localhost:8000/database', {
+                console.log('Try POST Request');
+                const response = await fetch('http://localhost:8000/database', {
                     method: 'POST',
                     body: JSON.stringify({ id: 0 }),
                     headers: {
                         "content-type": "application/json"
                     }
-                })
-                    .then(async response => {
-                        if (response.headers.get('content-type').includes('application/json')) {
-                            console.log('json:', await response.json());
-                        }
-                        else {
-                            console.log('text:', await response.text());
-                        }
-                    });
+                });
+                if (response.headers.get('content-type').includes('application/json')) {
+                    console.log('-- JSON:', await response.json());
+                } else {
+                    console.log('-- TEXT:', await response.text());
+                }
             } catch (err) { }
         })();
     </script>
