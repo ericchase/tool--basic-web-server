@@ -4,7 +4,7 @@
 
 Features
 
-- Auto-increment when preferred **port** in use
+- Auto-increment when preferred **port** is in use
 - Automatic file serving from **public** directory
   - URL path normalization and filtering
 - Sets up **MIME** types for html, css, js, png, jpg, gif, svg, ico file extensions
