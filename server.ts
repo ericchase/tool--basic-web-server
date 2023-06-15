@@ -7,7 +7,7 @@ import * as path from "https://deno.land/std/path/mod.ts";
 const preferredPort = Number.parseInt(Deno.env.get("PORT") ?? "8000");
 
 // Change public folder path
-const publicPath = "../public";
+const publicPath = "../content/public";
 
 // Add files to serve directly
 const absolutePaths: { [key: string]: string } = {

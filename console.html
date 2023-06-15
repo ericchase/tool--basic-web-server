@@ -2,120 +2,113 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-    <title>Console</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <title>Console</title>
 </head>
 
 <style>
-    body {
-        color: #333;
-        /* display: flex; */
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.42857143;
-        margin: 20px 30px;
-    }
+  body {
+    color: #333;
+    /* display: flex; */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    margin: 20px 30px;
+  }
 
-    .row {
-        display: flex;
-        gap: 5px;
-    }
+  .row {
+    display: flex;
+    gap: 5px;
+  }
 
-    .column {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
 </style>
 
 <body>
-    <div class="row">
-        <div class="column">
-            <a id="self-link" href="http://localhost:8000/">http://localhost:8000/</a>
-            <span id="status">Server running!</span>
-            <button id="restart">Restart</button>
-            <div class="vspace-10"></div>
-            <button id="shutdown">Shutdown</button>
-        </div>
+  <div class="row">
+    <div class="column">
+      <a id="self-link" href="http://localhost:8000/">http://localhost:8000/</a>
+      <span id="status">Server running!</span>
+      <button id="restart">Restart</button>
+      <div class="vspace-10"></div>
+      <button id="shutdown">Shutdown</button>
     </div>
-    <div class="vspace-30"></div>
-    <div class="row">
-        <div class="column">
-            <div id="file-list"></div>
-        </div>
+  </div>
+  <div class="vspace-30"></div>
+  <div class="row">
+    <div class="column">
+      <div id="file-list"></div>
     </div>
+  </div>
 </body>
 
 <script>
-    const url = `${location.protocol}//${location.host}`;
-    const self_link = document.querySelector('#self-link');
-    self_link.setAttribute('href', url);
-    self_link.innerText = self_link;
+  const url = `${location.protocol}//${location.host}`;
+  const self_link = document.querySelector('#self-link');
+  self_link.setAttribute('href', url);
+  self_link.innerText = self_link;
 
+  function refresh(ms) {
+    setTimeout('location.reload(true);', ms);
+  }
 
-    function refresh(ms) {
-        setTimeout("location.reload(true);", ms);
-    }
+  const restartDiv = document.getElementById('restart');
 
+  restartDiv.addEventListener('click', () => {
+    fetch('/api/restart');
+    document.getElementById('status').innerText = 'Restarting...';
+    restartDiv.remove();
+    shutdownDiv.remove();
+    refresh(500);
+  });
 
-    const restartDiv = document.getElementById('restart');
+  const shutdownDiv = document.getElementById('shutdown');
 
-    restartDiv.addEventListener('click', () => {
-        fetch('/api/restart');
-        document.getElementById('status').innerText = 'Restarting...';
-        restartDiv.remove();
-        shutdownDiv.remove();
-        refresh(500);
+  shutdownDiv.addEventListener('click', () => {
+    fetch('/api/shutdown');
+    document.getElementById('status').innerText = 'Shutting down...';
+    restartDiv.remove();
+    shutdownDiv.remove();
+
+    const refreshButton = document.createElement('button');
+    refreshButton.innerText = 'Refresh';
+    refreshButton.addEventListener('click', () => refresh(0));
+    document.body.querySelector('div').append();
+  });
+
+  const fileListDiv = document.getElementById('file-list');
+
+  fetch('/api/list')
+    .then((response) => response.json())
+    .then((json) => {
+      json.forEach((path) => {
+        const resourceDiv = document.createElement('div');
+        resourceDiv.innerHTML = `<a href="${path}">${path}</a>`;
+        fileListDiv.appendChild(resourceDiv);
+      });
     });
 
-
-    const shutdownDiv = document.getElementById('shutdown');
-
-    shutdownDiv.addEventListener('click', () => {
-        fetch('/api/shutdown');
-        document.getElementById('status').innerText = 'Shutting down...';
-        restartDiv.remove();
-        shutdownDiv.remove();
-
-        const refreshButton = document.createElement('button');
-        refreshButton.innerText = 'Refresh';
-        refreshButton.addEventListener('click', () => refresh(0));
-        document.body.querySelector('div').append();
-    });
-
-
-    const fileListDiv = document.getElementById('file-list');
-
-    fetch('/api/list')
-        .then(response => response.json())
-        .then(json => {
-            json.forEach(path => {
-                const resourceDiv = document.createElement('div');
-                resourceDiv.innerHTML = `<a href="${path}">${path}</a>`;
-                fileListDiv.appendChild(resourceDiv);
-            });
-        });
-
-
-    // add height to 'vspace-' divs
-    Array.from(document.querySelectorAll('[class*="vspace-"]'))
-        .forEach(el => {
-            const [_, size] = Array.from(el.classList)
-                .find(name => name.startsWith("vspace-"))
-                .split('-');
-            el.style.setProperty('height', `${size}px`);
-        });
-    // add width to 'hspace-' divs
-    Array.from(document.querySelectorAll('[class*="hspace-"]'))
-        .forEach(el => {
-            const [_, size] = Array.from(el.classList)
-                .find(name => name.startsWith("hspace-"))
-                .split('-');
-            el.style.setProperty('width', `${size}px`);
-        });
+  // add height to 'vspace-' divs
+  Array.from(document.querySelectorAll('[class*="vspace-"]')).forEach((el) => {
+    const [_, size] = Array.from(el.classList)
+      .find((name) => name.startsWith('vspace-'))
+      .split('-');
+    el.style.setProperty('height', `${size}px`);
+  });
+  // add width to 'hspace-' divs
+  Array.from(document.querySelectorAll('[class*="hspace-"]')).forEach((el) => {
+    const [_, size] = Array.from(el.classList)
+      .find((name) => name.startsWith('hspace-'))
+      .split('-');
+    el.style.setProperty('width', `${size}px`);
+  });
 </script>
 
 </html>
