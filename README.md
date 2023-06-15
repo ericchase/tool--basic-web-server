@@ -7,7 +7,8 @@ Features
 - Auto-increment when preferred **port** is in use
 - Automatic file serving from **public** directory
   - URL path normalization and filtering
-- Sets up **MIME** types for html, css, js, png, jpg, gif, svg, ico file extensions
+- Sets up **MIME** types for html, css, js, png, jpg, gif, svg, ico file
+  extensions
   - Add your own as well!
 - Example for handling **CORS** Preflight checks (the HTTP OPTIONS Request)
 
