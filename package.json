@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "scripts": {
+    "format-debug": "prettier . --debug-check",
+    "format": "prettier . --write"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.6",
+    "prettier": "^3.3.3"
+  }
+}

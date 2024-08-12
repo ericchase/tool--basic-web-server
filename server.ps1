@@ -1,12 +1,9 @@
-$local_executable = (Test-Path -Path .\deno.exe -PathType Leaf)
+$executable = (Test-Path -Path .\bun.exe -PathType Leaf) ? ".\bun" : "bun"
+& $executable "install"
+Write-Host ""
 
 while ($true) {
-  if ($local_executable) {
-    .\deno run --allow-env=PORT --allow-net --allow-read server.ts
-  }
-  else {
-    deno run --allow-env=PORT --allow-net --allow-read server.ts
-  }
+  & $executable "server.ts"
 
   if ($LASTEXITCODE -eq 0) { 
     $response = Read-Host "Restart? (y/n)"
