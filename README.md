@@ -1,34 +1,32 @@
-# deno--basic-web-server
+Basic web server for test environment using Bun (https://bun.sh/)
 
-Basic web server for test environment using Deno
-
-Features
+### Features
 
 - Auto-increment when preferred **port** is in use
-- Automatic file serving from **public** directory
-  - URL path normalization and filtering
-- Sets up **MIME** types for html, css, js, png, jpg, gif, svg, ico file
-  extensions
-  - Add your own as well!
-- Example for handling **CORS** Preflight checks (the HTTP OPTIONS Request)
+- File serving from **public** directory
+  - URL path normalization
+- Bun provides **MIME** types in responses by default
 
-Deno
+### Examples Pages
 
-- Grab the proper executable for your device here:
-  - [https://github.com/denoland/deno/releases](https://github.com/denoland/deno/releases)
+- Basic html page that loads a stylesheet and script.
+  - /example-site/index.html
+- Basic html page that loads a stylesheet and script as module.
+  - /example-site-modules/index.html
+- Mock page for handling **CORS** Preflight checks (the HTTP OPTIONS Request)
+  - /example-database-access.html
 
-Batch Script
+### Installing Bun
 
-- Runs the Powershell Script
+- Install the latest version of Bun from their website:
+  - [https://bun.sh/](https://bun.sh/)
 
-Powershell Script
+### Running the Server
 
-- Easy startup
-- Pause on errors
-- Auto restart on exit code 1
-- Quit on exit code 0
-- Look for Deno executable in root folder and path
+- Windows
 
-**Notes**
+  - Run `server.bat` or `server.ps1`\*
+  - \*running powershell scripts directly requires [security bypass](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_run_with_powershell?view=powershell-7.4)
 
-- Batch and Powershell scripts only run on Windows devices
+- Linux
+  - Run `bun server.ts`
