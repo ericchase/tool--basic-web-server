@@ -23,10 +23,9 @@ Basic web server for test environment using Bun (https://bun.sh/)
 
 ### Running the Server
 
-- Windows
+Run `bun install` and then `bun server.ts`.
 
-  - Run `server.bat` or `server.ps1`\*
-  - \*running powershell scripts directly requires [security bypass](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_run_with_powershell?view=powershell-7.4)
+Windows Quick Start Script:
 
-- Linux
-  - Run `bun server.ts`
+- Run `server.bat` or `server.ps1`[^1]
+- [^1]: running powershell scripts directly requires [security bypass](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_run_with_powershell?view=powershell-7.4)
