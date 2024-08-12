@@ -28,4 +28,5 @@ Run `bun install` and then `bun server.ts`.
 Windows Quick Start Script:
 
 - Run `server.bat` or `server.ps1`[^1]
-- [^1]: running powershell scripts directly requires [security bypass](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_run_with_powershell?view=powershell-7.4)
+
+[^1]: running powershell scripts directly requires [security bypass](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_run_with_powershell?view=powershell-7.4)
