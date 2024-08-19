@@ -9,12 +9,12 @@ export namespace server {
     switch (pathname) {
       case '/server/restart':
         console.log('Restarting...\n\n');
-        setTimeout(() => process.exit(2), 100);
+        setTimeout(() => process.exit(1), 100);
         return new Response('Restarting server.');
 
       case '/server/shutdown':
         console.log('Shutting down...\n\n');
-        setTimeout(() => process.exit(0), 100);
+        setTimeout(() => process.exit(2), 100);
         return new Response('Shutting down server.');
 
       case '/server/list':

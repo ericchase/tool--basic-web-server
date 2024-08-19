@@ -11,13 +11,23 @@ Write-Host ""
 while ($true) {
   & $executable "server.ts"
 
-  if ($LASTEXITCODE -eq 0) { 
-    Write-Host "code -"
+  $exitcode = $LASTEXITCODE
+  if ($exitcode -eq 0) { 
+    # default exit code is 0
+    Write-Host "exit code [$exitcode]:default"
     $response = Read-Host "Restart? (y/n)"
     if ($response -ne "y") { break }
   }
-  elseif ($LASTEXITCODE -eq 1) { pause }
-  else { break }
+  if ($exitcode -eq 1) { 
+    # restart
+    Write-Host "exit code [$exitcode]:restart"
+  }
+  if ($exitcode -eq 2) { 
+    # shutdown
+    Write-Host "exit code [$exitcode]:shutdown"
+    break
+  }
+  Write-Host ""
 }
 
 pause
