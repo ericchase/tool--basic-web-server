@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { get } from './src/router.get.js';
-import { options } from './src/router.options.js';
-import { post } from './src/router.post.js';
+import { get } from './router.get.js';
+import { options } from './router.options.js';
+import { post } from './router.post.js';
 
 const PUBLIC_PATH = './public';
 

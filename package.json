@@ -1,6 +1,8 @@
 {
   "type": "module",
   "scripts": {
+    "dev": "bun ./tools/dev.ts",
+    "start": "bun ./tools/start.ts",
     "format-debug": "prettier . --debug-check",
     "format": "prettier . --write"
   },
