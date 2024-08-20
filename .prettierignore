@@ -2,6 +2,7 @@
 
 coverage
 docs
+public
 
 # Lock Files
 bun.lockb
