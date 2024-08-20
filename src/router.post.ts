@@ -21,3 +21,25 @@ export async function post(req: Request): Promise<void | Response> {
       });
   }
 }
+
+async function extractBody(req: Request | Response) {
+  const data: {
+    blob?: Blob;
+    form?: FormData;
+    json?: any;
+    text?: string;
+  } = {};
+  try {
+    data.form = await req.formData();
+  } catch (_) {}
+  try {
+    data.json = await req.json();
+  } catch (_) {}
+  try {
+    data.text = await req.text();
+  } catch (_) {}
+  try {
+    data.blob = await req.blob();
+  } catch (_) {}
+  return data;
+}
