@@ -22,24 +22,28 @@ export async function post(req: Request): Promise<void | Response> {
   }
 }
 
-async function extractBody(req: Request | Response) {
+export async function analyzeBody(req: Request | Response) {
   const data: {
-    blob?: Blob;
-    form?: FormData;
-    json?: any;
-    text?: string;
+    blob?: true;
+    form?: true;
+    json?: true;
+    text?: true;
   } = {};
   try {
-    data.form = await req.formData();
+    await req.clone().blob();
+    data.blob = true;
   } catch (_) {}
   try {
-    data.json = await req.json();
+    await req.clone().formData();
+    data.form = true;
   } catch (_) {}
   try {
-    data.text = await req.text();
+    await req.clone().json();
+    data.json = true;
   } catch (_) {}
   try {
-    data.blob = await req.blob();
+    await req.clone().text();
+    data.text = true;
   } catch (_) {}
   return data;
 }
