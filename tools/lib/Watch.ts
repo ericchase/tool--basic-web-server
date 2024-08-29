@@ -8,6 +8,7 @@ export interface WatchParams {
 }
 export function Watch({ path, debounce_interval = 0, change_cb = (_) => {}, error_cb = (_) => {} }: WatchParams) {
   return new Promise(async (resolve, reject) => {
+    // TODO: replace this with Bun.watch
     const p = node_child_process.spawn('watch', [path]);
     p.on('close', (code) => {
       resolve(code);
