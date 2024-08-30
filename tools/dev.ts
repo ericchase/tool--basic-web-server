@@ -1,14 +1,12 @@
 import type { Subprocess } from 'bun';
 
 import { Broadcast } from './lib/Broadcast.js';
-// TODO: replace watch with Bun.watch?
-import { Watch } from './lib/Watch.js';
+import { Watcher } from './lib/Watch.js';
 
 const pipe = new Broadcast<string>();
 
 (async function () {
   let proc: Subprocess<'ignore', 'inherit', 'inherit'> | undefined = undefined;
-  await pipe.wait('restart');
   while (true) {
     proc = Bun.spawn(['bun', './src/server.ts'], { stdout: 'inherit' });
     let restart = false;
@@ -41,17 +39,13 @@ const pipe = new Broadcast<string>();
 
 while (true) {
   try {
-    await Watch({
-      path: './src',
-      debounce_interval: 500,
-      change_cb: () => {
-        pipe.send('restart');
-      },
-      error_cb: (error) => {
-        console.error('\x1b[31mfail\x1b[0m', 'ERROR', error);
-      },
+    const watcher = new Watcher('./src', 250);
+    watcher.observe(() => {
+      watcher.abort();
+      pipe.send('restart');
     });
-  } catch (err) {
-    console.log(err);
+    await watcher.done;
+  } catch (error) {
+    console.log(error);
   }
 }

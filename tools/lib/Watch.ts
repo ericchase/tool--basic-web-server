@@ -1,39 +1,64 @@
-import node_child_process from 'node:child_process';
+import { type FileChangeInfo, watch } from 'node:fs/promises';
 
-export interface WatchParams {
-  path: string;
-  debounce_interval: number;
-  change_cb: (changes: string[]) => void;
-  error_cb: (error: string) => void;
-}
-export function Watch({ path, debounce_interval = 0, change_cb = (_) => {}, error_cb = (_) => {} }: WatchParams) {
-  return new Promise(async (resolve, reject) => {
-    // TODO: replace this with Bun.watch
-    const p = node_child_process.spawn('watch', [path]);
-    p.on('close', (code) => {
-      resolve(code);
-    });
-    p.on('error', (error) => {
-      reject(error);
-    });
-    if (debounce_interval > 0) {
-      let changes: string[] = [];
-      p.stdout.on('data', (chunk) => {
-        changes.push(chunk.toString().slice(0, -1));
-      });
-      setInterval(() => {
-        if (changes.length > 0) {
-          change_cb(changes);
-          changes = [];
+export type ObserverCallback = (events: FileChangeInfo<string>[], unsubscribe: () => void) => void;
+export type UnobserveFn = () => void;
+
+export class Watcher {
+  /**
+   * @param debounce_interval 0
+   * @param recursive true
+   */
+  constructor(
+    path: string,
+    public debounce_interval = 0,
+    recursive = true,
+  ) {
+    // Debounced Event Notification
+    let calling = false;
+    let events: FileChangeInfo<string>[] = [];
+    let timer = setTimeout(() => {});
+    const enqueue = (event: FileChangeInfo<string>) => {
+      events.push(event);
+      if (calling === false) {
+        clearTimeout(timer);
+        timer = setTimeout(async () => {
+          if (calling === false) {
+            calling = true;
+            clearTimeout(timer);
+            this.notify(events);
+            events = [];
+            clearTimeout(timer);
+            calling = false;
+          }
+        }, debounce_interval);
+      }
+    };
+    this.done = new Promise<void>(async (resolve) => {
+      try {
+        for await (const event of watch(path, { recursive, signal: this.controller.signal })) {
+          enqueue(event);
         }
-      }, debounce_interval).unref();
-    } else {
-      p.stdout.on('data', (chunk) => {
-        change_cb([chunk.toString().slice(0, -1)]);
+      } catch (err) {}
+      resolve();
+    });
+  }
+  public abort() {
+    this.controller.abort();
+  }
+  public observe(callback: ObserverCallback): UnobserveFn {
+    this.callbackSet.add(callback);
+    return () => {
+      this.callbackSet.delete(callback);
+    };
+  }
+  public readonly done: Promise<void>;
+  protected callbackSet = new Set<ObserverCallback>();
+  protected controller = new AbortController();
+  protected notify(events: FileChangeInfo<string>[]): void {
+    for (const callback of this.callbackSet) {
+      callback(events, () => {
+        this.callbackSet.delete(callback);
       });
     }
-    p.stderr.on('data', (chunk) => {
-      error_cb(chunk.toString().slice(0, -1));
-    });
-  });
+  }
 }
