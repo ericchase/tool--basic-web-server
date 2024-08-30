@@ -41,11 +41,10 @@ while (true) {
   try {
     const watcher = new Watcher('./src', 250);
     watcher.observe(() => {
-      watcher.abort();
       pipe.send('restart');
     });
     await watcher.done;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
