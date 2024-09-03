@@ -21,7 +21,7 @@ yarn-error.log*
 **/.idea/*
 **/.vscode/*
 
-# Other
+# Miscellaneous
 *.env
 *.exe
 *.mkv
