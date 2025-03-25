@@ -7,11 +7,19 @@
 
     // Bundler mode
     "moduleResolution": "Bundler",
-    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": false,
 
     // Best practices
-    "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true
-  }
+    "strict": true,
+
+    // Other options
+    "resolveJsonModule": true,
+    "jsx": "react-jsx"
+  },
+
+  // Include files for typescript/intellisense
+  "include": ["./*", "./src/**/*", "./tools/**/*"]
 }

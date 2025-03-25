@@ -5,7 +5,7 @@ Basic web server for test environment using Bun (https://bun.sh/)
 ### Features
 
 - Auto-increment when preferred **port** is in use
-- File serving from **public** directory
+- File serving from the **public** directory
   - URL path normalization
 - Bun provides **MIME** types in responses by default
 
@@ -25,8 +25,5 @@ Basic web server for test environment using Bun (https://bun.sh/)
 
 ### Running the Server
 
-Run `bun install` and then `bun server.ts`.
-
-Windows Quick Start Script:
-
-- Run `server.bat`
+- Run `bun run start`, or
+- Run `bun run tools/start.ts`.

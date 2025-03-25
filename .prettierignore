@@ -1,11 +1,28 @@
 # prettier ignores files setup in .gitignore
 
-coverage
-docs
-public
+# use biome for these
+# https://biomejs.dev/internals/language-support/
+*.js
+*.ts
+*.jsx
+*.tsx
+*.json
+*.jsonc
+*.css
+*.graphqls
+*.graphql
 
-# Lock Files
-bun.lockb
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
+# probably don't want to format your hand written documents
+coverage/
+docs/
+examples/
+
+# don't want to format lock files
+*-lock.json
+*-lock.yaml
+
+# up to you whether you want to format the resulting files
+public/
+
+# library comes pre-formatted, but you can format it differently if you want
+src/lib/ericchase/

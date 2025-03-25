@@ -1,18 +1,20 @@
-import type { Subprocess } from 'bun';
+import { ConsoleLog } from '../src/lib/ericchase/Utility/Console.js';
 
-let proc: Subprocess<'ignore', 'inherit', 'inherit'> | undefined = undefined;
+Bun.spawnSync(['bun', 'install'], { cwd: `${__dirname}\\..`, stderr: 'inherit', stdout: 'inherit' });
+
 while (true) {
-  proc = Bun.spawn(['bun', './src/server.ts'], { stdout: 'inherit' });
-  await proc.exited;
-  switch (proc.exitCode) {
+  const server_process = Bun.spawn(['bun', './src/server.ts'], { cwd: `${__dirname}/..`, stderr: 'inherit', stdout: 'inherit' });
+  await server_process.exited;
+  switch (server_process.exitCode) {
     case 1:
-      console.log('Exit Code [1]:Restart');
+      ConsoleLog('Exit Code [1]:Restart');
       break;
     case 2:
-      console.log('Exit Code [2]:Shutdown');
+      ConsoleLog('Exit Code [2]:Shutdown');
       process.exit(0);
+      break;
     default:
-      console.log(`Exit Code [${proc.exitCode}]`);
+      ConsoleLog(`Exit Code [${server_process.exitCode}]`);
       process.stdout.write('Restart? (y/n)');
       for await (const line of console) {
         if (line.trim() === 'y') break;
@@ -20,5 +22,5 @@ while (true) {
       }
       break;
   }
-  console.log('\n');
+  ConsoleLog('\n');
 }

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "files": {
+    "maxSize": 102400
+  },
+  "formatter": {
+    "enabled": true,
+    "ignore": ["node_modules", "*-lock.json", "out/", "src/lib/ericchase/", "tools/lib/"],
+    "attributePosition": "auto",
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 320
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true,
+      "arrowParentheses": "always",
+      "attributePosition": "auto",
+      "bracketSameLine": true,
+      "bracketSpacing": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "jsxQuoteStyle": "double",
+      "lineEnding": "lf",
+      "lineWidth": 320,
+      "quoteProperties": "preserve",
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineEnding": "lf",
+      "lineWidth": 320,
+      "trailingCommas": "none"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": ["node_modules", "*-lock.json", "out/", "src/lib/ericchase/", "tools/lib/"],
+    "rules": {
+      "complexity": {
+        "noBannedTypes": "off",
+        "noUselessConstructor": "off",
+        "noUselessTernary": "off"
+      },
+      "style": {
+        "noParameterAssign": "off",
+        "useConst": "off",
+        "useImportType": "off"
+      },
+      "suspicious": {
+        "noConfusingVoidType": "off",
+        "noEmptyInterface": "off",
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "organizeImports": {
+    "enabled": false
+  }
+}

@@ -1,24 +1,36 @@
-export async function post(req: Request): Promise<void | Response> {
-  const url = new URL(req.url);
-  const pathname = decodeURIComponent(url.pathname);
-  console.log(`POST     ${pathname}`);
+import { query } from './db.js';
+import { ConsoleLog } from './lib/ericchase/Utility/Console.js';
 
-  // console.log(`HEADERS`);
+export async function post(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
+  ConsoleLog(`POST     ${pathname}`);
+
+  // ConsoleLog(`HEADERS`);
   // for (const [k, v] of req.headers) {
-  //   console.log(`    ${k}: ${v}`);
+  //   ConsoleLog(`    ${k}: ${v}`);
   // }
 
   // custom routing here
   switch (pathname) {
-    case '/database':
-      // Example case of dealing with a public database?
-      // Send back some fake data
-      return new Response(JSON.stringify({ id: 1, user: 'John Smith' }), {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-      });
+    case '/database/query': {
+      try {
+        const { text, params } = await req.json();
+        const result = await query(text, params);
+        return new Response(JSON.stringify(result), {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+          status: 500,
+        });
+      }
+    }
   }
 }
 
