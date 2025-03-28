@@ -6,7 +6,7 @@ export class CPath {
     for (const path of paths) {
       if (path instanceof CPath) {
         this.segments.push(...path.segments);
-      } else {
+      } else if (typeof path === 'string') {
         this.segments.push(...path.split(/[\\\/]/).filter(({ length }) => length > 0));
       }
     }

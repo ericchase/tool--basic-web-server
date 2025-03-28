@@ -1,6 +1,7 @@
 Basic web server for test environment using Bun (https://bun.sh/)
 
-- https://github.com/ericchase/tool--basic-web-server
+- Please take a look at the project source code for examples:
+  - https://github.com/ericchase/tool--basic-web-server
 
 ### Features
 

@@ -5,7 +5,7 @@
   },
   "formatter": {
     "enabled": true,
-    "ignore": ["node_modules", "*-lock.json", "out/", "src/lib/ericchase/", "tools/lib/"],
+    "ignore": ["node_modules", "*-lock.json", "src/lib/ericchase/"],
     "attributePosition": "auto",
     "formatWithErrors": true,
     "indentStyle": "space",
@@ -43,7 +43,7 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": ["node_modules", "*-lock.json", "out/", "src/lib/ericchase/", "tools/lib/"],
+    "ignore": ["node_modules", "*-lock.json", "src/lib/ericchase/"],
     "rules": {
       "complexity": {
         "noBannedTypes": "off",
