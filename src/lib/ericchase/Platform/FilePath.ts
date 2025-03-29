@@ -46,6 +46,11 @@ export class CPath {
     }
   }
 
+  // Gets the path excluding the rightmost segment.
+  get parentpath() {
+    return this.slice(0, -1);
+  }
+
   // Joins path segments with platform-specific separators.
   get raw() {
     return node_path.join(...this.segments);
@@ -102,11 +107,8 @@ export function NormalizedPath(...paths: (CPath | string)[]): CPath {
 }
 
 // Returns a relative path between the directory of one path and another path.
-export function GetRelativePath(from: { path: CPath | string; isFile: boolean }, to: { path: CPath | string; isFile: boolean }): CPath {
-  function getDirPath({ path, isFile }: { path: CPath | string; isFile: boolean }): string {
-    return isFile === true ? Path(path).slice(0, -1).raw : Path(path).raw;
-  }
-  return Path(node_path.relative(getDirPath(from), Path(to.path).raw));
+export function GetRelativePath(from_path: CPath | string, from_is_file: boolean, to_path: CPath | string): CPath {
+  return Path(node_path.relative(from_is_file === true ? Path(from_path).parentpath.raw : Path(from_path).raw, Path(to_path).raw));
 }
 
 // Sanitizes a string into a valid filename. If `name` is a file path, the path

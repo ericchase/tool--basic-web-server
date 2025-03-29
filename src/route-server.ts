@@ -42,7 +42,7 @@ async function getPublicListing(): Promise<Response | undefined> {
       withFileTypes: true,
     })) {
       if (entry.isFile()) {
-        entries.push(GetRelativePath({ path: public_path, isFile: false }, { path: `${entry.parentPath}\\${entry.name}`, isFile: true }).standard);
+        entries.push(GetRelativePath(public_path, false, `${entry.parentPath}\\${entry.name}`).standard);
       }
     }
     return new Response(JSON.stringify(entries.sort()));
