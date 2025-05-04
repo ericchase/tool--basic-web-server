@@ -1,48 +1,50 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Example Database Interaction</title>
-  </head>
 
-  <body>
-    <div style="color: green">// Check the Dev-Tools Console and Network tabs</div>
-    <br />
-    <div>Try opening this file directly in your browser while the server is running!</div>
-    <div>By doing this, the browser will be accessing server files from a different origin, resulting in CORS Preflight checks.</div>
-    <div>You will see this as an OPTIONS request in Console and Network tabs of Dev-Tools.</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example Database Interaction</title>
+</head>
 
-    <script>
-      (async function () {
-        try {
-          console.log('Try GET Request');
-          // we expect this to fail, because our fake database allows POST requests only
-          const response = await fetch('http://localhost:8000/database', { method: 'GET' });
-          if (response.headers.get('content-type').includes('application/json')) {
-            console.log('-- JSON:', await response.json());
-          } else {
-            console.log('-- TEXT:', await response.text());
-          }
-        } catch (err) {}
+<body>
+  <div style="color: green">// Check the Dev-Tools Console and Network tabs</div>
+  <br />
+  <div>Try opening this file directly in your browser while the server is running!</div>
+  <div>By doing this, the browser will be accessing server files from a different origin, resulting in CORS Preflight checks.</div>
+  <div>You will see this as an OPTIONS request in Console and Network tabs of Dev-Tools.</div>
 
-        try {
-          console.log('Try POST Request');
-          const response = await fetch('http://localhost:8000/database', {
-            method: 'POST',
-            body: JSON.stringify({ id: 0 }),
-            headers: {
-              'content-type': 'application/json',
-            },
-          });
-          if (response.headers.get('content-type').includes('application/json')) {
-            console.log('-- JSON:', await response.json());
-          } else {
-            console.log('-- TEXT:', await response.text());
-          }
-        } catch (err) {}
-      })();
-    </script>
-  </body>
+  <script>
+    (async function () {
+      try {
+        console.log('Try GET Request');
+        // we expect this to fail, because our fake database allows POST requests only
+        const response = await fetch('http://localhost:8000/database/query', { method: 'GET' });
+        if (response.headers.get('content-type').includes('application/json')) {
+          console.log('-- JSON:', await response.json());
+        } else {
+          console.log('-- TEXT:', await response.text());
+        }
+      } catch (err) { }
+
+      try {
+        console.log('Try POST Request');
+        const response = await fetch('http://localhost:8000/database/query', {
+          method: 'POST',
+          body: JSON.stringify({ id: 0 }),
+          headers: {
+            'content-type': 'application/json',
+          },
+        });
+        if (response.headers.get('content-type').includes('application/json')) {
+          console.log('-- JSON:', await response.json());
+        } else {
+          console.log('-- TEXT:', await response.text());
+        }
+      } catch (err) { }
+    })();
+  </script>
+</body>
+
 </html>

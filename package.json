@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "pg": "^8.14.1"
+    "pg": "^8.15.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@types/bun": "^1.2.5",
-    "@types/pg": "^8.11.11",
+    "@types/bun": "^1.2.12",
+    "@types/pg": "^8.11.14",
     "prettier": "^3.5.3"
   },
   "scripts": {

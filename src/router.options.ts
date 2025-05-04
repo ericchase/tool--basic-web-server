@@ -5,7 +5,7 @@ export function options(req: Request, url: URL, pathname: string): Promise<Respo
 
   // custom routing here
   switch (pathname) {
-    case '/database': {
+    case '/database/query': {
       // Example case of dealing with a public database?
       // For this example, the client might request content-type of JSON,
       //  so the "content-type" header should be allowed.

@@ -21,8 +21,9 @@ export async function post(req: Request, url: URL, pathname: string): Promise<Re
             'Content-Type': 'application/json',
           },
         });
-      } catch (error) {
-        return new Response(JSON.stringify(error), {
+      } catch (error: any) {
+        console.error(error);
+        return new Response(JSON.stringify('Internal Server Error: Check server logs.'), {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
