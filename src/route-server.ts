@@ -1,48 +1,48 @@
-import { default as node_fs } from 'node:fs';
-import { GetRelativePath, NormalizedPath } from './lib/ericchase/Platform/FilePath.js';
-import { ConsoleLog } from './lib/ericchase/Utility/Console.js';
+import { Core } from './lib/ericchase/core.js';
+import { NODE_FS, NODE_PATH, NodePlatform } from './lib/ericchase/platform-node.js';
 
 export namespace server {
-  export async function getConsole(): Promise<Response | undefined> {
-    return new Response(Bun.file('./console.html'));
+  export function getConsole(): Promise<Response | undefined> {
+    return Promise.resolve(new Response(Bun.file('./console.html')));
   }
-  export async function get(pathname: string): Promise<Response | undefined> {
+  export function get(pathname: string): Promise<Response | undefined> {
     switch (pathname) {
       case '/server/restart': {
-        ConsoleLog('Restarting...');
+        Core.Console.Log('Restarting...');
         setTimeout(() => process.exit(1), 100);
-        return new Response('Restarting server.');
+        return Promise.resolve(new Response('Restarting server.'));
       }
       case '/server/shutdown': {
-        ConsoleLog('Shutting down...');
+        Core.Console.Log('Shutting down...');
         setTimeout(() => process.exit(2), 100);
-        return new Response('Shutting down server.');
+        return Promise.resolve(new Response('Shutting down server.'));
       }
       case '/server/list': {
         return getPublicListing();
       }
     }
+    return Promise.resolve(undefined);
   }
 }
 
 async function getPublicListing(): Promise<Response | undefined> {
   if (Bun.env.PUBLIC_PATH) {
-    const public_path = NormalizedPath(Bun.env.PUBLIC_PATH);
+    const public_path = NodePlatform.Path.Resolve(Bun.env.PUBLIC_PATH);
     try {
-      if ((await node_fs.promises.stat(public_path.raw)).isDirectory() === false) {
+      if ((await NodePlatform.Path.Async_IsDirectory(public_path)) === false) {
         throw undefined;
       }
     } catch (error) {
       throw new Error(`PUBLIC_PATH "${Bun.env.PUBLIC_PATH}" does not exist or is not a directory.`);
     }
     const entries: string[] = [];
-    for (const entry of await node_fs.promises.readdir(public_path.raw, {
+    for (const entry of await NODE_FS.promises.readdir(public_path, {
       encoding: 'utf8',
       recursive: true,
       withFileTypes: true,
     })) {
       if (entry.isFile()) {
-        entries.push(GetRelativePath(public_path, false, `${entry.parentPath}\\${entry.name}`).standard);
+        entries.push(NodePlatform.Path.JoinStandard(NODE_PATH.relative(public_path, `${entry.parentPath}\\${entry.name}`)));
       }
     }
     return new Response(JSON.stringify(entries.sort()));

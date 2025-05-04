@@ -18,11 +18,9 @@ docs/
 examples/
 
 # don't want to format lock files
+bun.lock
 *-lock.json
 *-lock.yaml
 
 # up to you whether you want to format the resulting files
 public/
-
-# library comes pre-formatted, but you can format it differently if you want
-src/lib/ericchase/

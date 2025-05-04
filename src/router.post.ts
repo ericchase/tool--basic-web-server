@@ -1,12 +1,12 @@
 import { query } from './db.js';
-import { ConsoleLog } from './lib/ericchase/Utility/Console.js';
+import { Core } from './lib/ericchase/core.js';
 
 export async function post(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
-  ConsoleLog(`POST     ${pathname}`);
+  Core.Console.Log(`POST     ${pathname}`);
 
-  // ConsoleLog(`HEADERS`);
+  // Core.Console.Log(`HEADERS`);
   // for (const [k, v] of req.headers) {
-  //   ConsoleLog(`    ${k}: ${v}`);
+  //   Core.Console.Log(`    ${k}: ${v}`);
   // }
 
   // custom routing here

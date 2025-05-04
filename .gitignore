@@ -224,6 +224,9 @@ web_modules/
 /debug/
 /src-tauri/target/
 
+# bun.build
+*.bun-build
+
 # freefilesync database
 sync.ffs_db
 
