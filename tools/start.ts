@@ -1,4 +1,4 @@
-import { Core } from '../src/lib/ericchase/core.js';
+import { Core_Console_Log } from '../src/lib/ericchase/api.core.js';
 
 Bun.spawnSync(['bun', 'install'], { cwd: `${__dirname}\\..`, stderr: 'inherit', stdout: 'inherit' });
 
@@ -7,14 +7,14 @@ while (true) {
   await server_process.exited;
   switch (server_process.exitCode) {
     case 1:
-      Core.Console.Log('Exit Code [1]:Restart');
+      Core_Console_Log('Exit Code [1]:Restart');
       break;
     case 2:
-      Core.Console.Log('Exit Code [2]:Shutdown');
+      Core_Console_Log('Exit Code [2]:Shutdown');
       process.exit(0);
       break;
     default:
-      Core.Console.Log(`Exit Code [${server_process.exitCode}]`);
+      Core_Console_Log(`Exit Code [${server_process.exitCode}]`);
       process.stdout.write('Restart? (y/n)');
       for await (const line of console) {
         if (line.trim() === 'y') break;
@@ -22,5 +22,5 @@ while (true) {
       }
       break;
   }
-  Core.Console.Log('\n');
+  Core_Console_Log('\n');
 }

@@ -1,5 +1,5 @@
 import { ServerWebSocket } from 'bun';
-import { Core } from './lib/ericchase/core.js';
+import { Core_Console_Log } from './lib/ericchase/api.core.js';
 import { get } from './router.get.js';
 import { options } from './router.options.js';
 import { post } from './router.post.js';
@@ -33,9 +33,9 @@ function createServer(hostname: string, port: number) {
           return response;
         }
       } catch (error) {
-        Core.Console.Log();
-        Core.Console.Log(error);
-        Core.Console.Log();
+        Core_Console_Log();
+        Core_Console_Log(error);
+        Core_Console_Log();
       }
       return new Response('404', { status: 404 });
     },
@@ -77,9 +77,9 @@ function getMethodHandler(method: string): ((req: Request, url: URL, pathname: s
 async function tryStartServer(hostname: string, port: number) {
   try {
     const server = createServer(hostname, port);
-    Core.Console.Log('Serving at', `http://${server.hostname === '0.0.0.0' ? 'localhost' : server.hostname}:${server.port}/`);
-    Core.Console.Log('Console at', `http://${server.hostname === '0.0.0.0' ? 'localhost' : server.hostname}:${server.port}/console`);
-    Core.Console.Log();
+    Core_Console_Log('Serving at', `http://${server.hostname === '0.0.0.0' ? 'localhost' : server.hostname}:${server.port}/`);
+    Core_Console_Log('Console at', `http://${server.hostname === '0.0.0.0' ? 'localhost' : server.hostname}:${server.port}/console`);
+    Core_Console_Log();
   } catch (error) {
     let error_code: 'EADDRINUSE' | 'EBADHOST' | undefined = undefined;
 
@@ -92,20 +92,20 @@ async function tryStartServer(hostname: string, port: number) {
       if (await testLocalhostServer(port)) {
         error_code = 'EBADHOST';
       } else {
-        Core.Console.Log(`%c${error_code}: %cFailed to start server. Is port ${port} in use?`, 'color:red', 'color:gray');
-        Core.Console.Log(`Trying port ${port + 1} next.`);
+        Core_Console_Log(`%c${error_code}: %cFailed to start server. Is port ${port} in use?`, 'color:red', 'color:gray');
+        Core_Console_Log(`Trying port ${port + 1} next.`);
         setTimeout(() => tryStartServer(hostname, port + 1), 0);
         return;
       }
     }
 
     if (error_code === 'EBADHOST') {
-      Core.Console.Log(`%c${error_code}: %cHostname ${hostname} may be invalid.`);
-      Core.Console.Log('Please try another hostname or use localhost (127.0.0.1) to serve locally.');
+      Core_Console_Log(`%c${error_code}: %cHostname ${hostname} may be invalid.`);
+      Core_Console_Log('Please try another hostname or use localhost (127.0.0.1) to serve locally.');
       return;
     }
 
-    Core.Console.Log(error);
+    Core_Console_Log(error);
   }
 }
 

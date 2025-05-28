@@ -1,7 +1,7 @@
-import { Core } from './lib/ericchase/core.js';
+import { Core_Console_Log } from './lib/ericchase/api.core.js';
 
 export function options(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
-  Core.Console.Log(`OPTIONS  ${pathname}`);
+  Core_Console_Log(`OPTIONS  ${pathname}`);
 
   // custom routing here
   switch (pathname) {
