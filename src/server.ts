@@ -1,5 +1,5 @@
 import { ServerWebSocket } from 'bun';
-import { Core_Console_Log } from './lib/ericchase/api.core.js';
+import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
 import { get } from './router.get.js';
 import { options } from './router.options.js';
 import { post } from './router.post.js';

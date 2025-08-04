@@ -1,9 +1,24 @@
-import { Core_Console_Log } from '../src/lib/ericchase/api.core.js';
+import { Core_Console_Log } from '../src/lib/ericchase/Core_Console_Log.js';
+import { NODE_PATH } from '../src/lib/ericchase/NodePlatform.js';
 
-Bun.spawnSync(['bun', 'install'], { cwd: `${__dirname}\\..`, stderr: 'inherit', stdout: 'inherit' });
+Bun.spawnSync(['bun', 'install'], {
+  cwd: NODE_PATH.join(__dirname, '..'),
+  stderr: 'inherit',
+  stdout: 'inherit',
+});
+
+let server_process: Bun.Subprocess<'ignore', 'inherit', 'inherit'> | undefined = undefined;
+
+process.on('exit', () => {
+  server_process?.kill(0);
+});
 
 while (true) {
-  const server_process = Bun.spawn(['bun', './src/server.ts'], { cwd: `${__dirname}/..`, stderr: 'inherit', stdout: 'inherit' });
+  server_process = Bun.spawn(['bun', NODE_PATH.join('src', 'server.ts')], {
+    cwd: NODE_PATH.join(__dirname, '..'),
+    stderr: 'inherit',
+    stdout: 'inherit',
+  });
   await server_process.exited;
   switch (server_process.exitCode) {
     case 1:
@@ -23,4 +38,5 @@ while (true) {
       break;
   }
   Core_Console_Log('\n');
+  server_process = undefined;
 }

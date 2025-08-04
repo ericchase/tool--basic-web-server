@@ -1,5 +1,8 @@
-import { Core_Console_Log } from './lib/ericchase/api.core.js';
-import { NODE_FS, NODE_PATH, NodePlatform_Path_Async_IsDirectory, NodePlatform_Path_JoinStandard, NodePlatform_Path_Resolve } from './lib/ericchase/api.platform-node.js';
+import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
+import { NODE_PATH } from './lib/ericchase/NodePlatform.js';
+import { Async_NodePlatform_Directory_ReadDir } from './lib/ericchase/NodePlatform_Directory_ReadDir.js';
+import { Async_NodePlatform_Path_Is_Directory } from './lib/ericchase/NodePlatform_Path_Is_Directory.js';
+import { NodePlatform_PathObject_Relative_Class } from './lib/ericchase/NodePlatform_PathObject_Relative_Class.js';
 
 export namespace server {
   export function getConsole(): Promise<Response | undefined> {
@@ -27,22 +30,21 @@ export namespace server {
 
 async function getPublicListing(): Promise<Response | undefined> {
   if (Bun.env.PUBLIC_PATH) {
-    const public_path = NodePlatform_Path_Resolve(Bun.env.PUBLIC_PATH);
+    const public_pathobject = NodePlatform_PathObject_Relative_Class(Bun.env.PUBLIC_PATH);
+    const public_path = public_pathobject.join();
     try {
-      if ((await NodePlatform_Path_Async_IsDirectory(public_path)) === false) {
+      if ((await Async_NodePlatform_Path_Is_Directory(public_path)) === false) {
         throw undefined;
       }
     } catch (error) {
       throw new Error(`PUBLIC_PATH "${Bun.env.PUBLIC_PATH}" does not exist or is not a directory.`);
     }
     const entries: string[] = [];
-    for (const entry of await NODE_FS.promises.readdir(public_path, {
-      encoding: 'utf8',
-      recursive: true,
-      withFileTypes: true,
-    })) {
+    const { value: dirents } = await Async_NodePlatform_Directory_ReadDir(public_path, true);
+    for (const entry of dirents ?? []) {
       if (entry.isFile()) {
-        entries.push(NodePlatform_Path_JoinStandard(NODE_PATH.relative(public_path, `${entry.parentPath}\\${entry.name}`)));
+        const entry_pathobject = NodePlatform_PathObject_Relative_Class(NODE_PATH.relative(public_path, NODE_PATH.join(entry.parentPath, entry.name)));
+        entries.push(entry_pathobject.join());
       }
     }
     return new Response(JSON.stringify(entries.sort()));

@@ -1,5 +1,5 @@
 import { query } from './db.js';
-import { Core_Console_Log } from './lib/ericchase/api.core.js';
+import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
 
 export async function post(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
   Core_Console_Log(`POST     ${pathname}`);

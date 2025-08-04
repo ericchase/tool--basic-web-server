@@ -3,7 +3,6 @@
 # probably don't want to format your hand written documents
 coverage/
 docs/
-examples/
 
 # don't want to format lock files
 bun.lock

@@ -1,4 +1,4 @@
-import { Core_Console_Log } from './lib/ericchase/api.core.js';
+import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
 
 export function options(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
   Core_Console_Log(`OPTIONS  ${pathname}`);

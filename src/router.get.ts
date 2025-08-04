@@ -1,5 +1,7 @@
-import { Core_Console_Log } from './lib/ericchase/api.core.js';
-import { NodePlatform_Path_Async_IsDirectory, NodePlatform_Path_Join, NodePlatform_Path_Resolve } from './lib/ericchase/api.platform-node.js';
+import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
+import { NODE_PATH } from './lib/ericchase/NodePlatform.js';
+import { Async_NodePlatform_Path_Is_Directory } from './lib/ericchase/NodePlatform_Path_Is_Directory.js';
+import { NodePlatform_PathObject_Relative_Class } from './lib/ericchase/NodePlatform_PathObject_Relative_Class.js';
 import { server } from './route-server.js';
 
 export function get(req: Request, url: URL, pathname: string): Promise<Response | undefined> {
@@ -21,18 +23,20 @@ export function get(req: Request, url: URL, pathname: string): Promise<Response 
 // pathname starts with '/'
 async function getPublicResource(pathname: string): Promise<Response | undefined> {
   if (Bun.env.PUBLIC_PATH) {
-    const public_path = NodePlatform_Path_Resolve(Bun.env.PUBLIC_PATH);
+    const public_pathobject = NodePlatform_PathObject_Relative_Class(Bun.env.PUBLIC_PATH);
+    const public_path = public_pathobject.join();
+    const public_path_resolved = NODE_PATH.resolve(public_path);
     try {
-      if ((await NodePlatform_Path_Async_IsDirectory(public_path)) === false) {
+      if ((await Async_NodePlatform_Path_Is_Directory(public_path)) === false) {
         throw undefined;
       }
     } catch (error) {
       throw new Error(`PUBLIC_PATH "${Bun.env.PUBLIC_PATH}" does not exist or is not a directory.`);
     }
     // join handles the '/'
-    const resource_path = NodePlatform_Path_Resolve(NodePlatform_Path_Join(Bun.env.PUBLIC_PATH, pathname));
-    if (resource_path.startsWith(public_path)) {
-      const resource_file = Bun.file(resource_path);
+    const resource_path_resolved = NODE_PATH.resolve(NODE_PATH.join(public_path, pathname));
+    if (resource_path_resolved.startsWith(public_path_resolved)) {
+      const resource_file = Bun.file(resource_path_resolved);
       if (await resource_file.exists()) {
         return new Response(resource_file);
       }
