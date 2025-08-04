@@ -38,7 +38,11 @@ async function getPublicResource(pathname: string): Promise<Response | undefined
     if (resource_path_resolved.startsWith(public_path_resolved)) {
       const resource_file = Bun.file(resource_path_resolved);
       if (await resource_file.exists()) {
-        return new Response(resource_file);
+        return new Response(resource_file, {
+          // headers: {
+          //   'Access-Control-Allow-Origin': '*', // add CORS handling
+          // },
+        });
       }
     }
   }
