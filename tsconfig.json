@@ -1,25 +1,16 @@
 {
   "compilerOptions": {
-    // Enable latest features
     "module": "ESNext",
     "moduleDetection": "force",
     "target": "ESNext",
-
-    // Bundler mode
     "moduleResolution": "Bundler",
     "noEmit": true,
     "verbatimModuleSyntax": false,
-
-    // Best practices
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "strict": true,
-
-    // Other options
     "resolveJsonModule": true,
     "jsx": "react-jsx"
   },
-
-  // Include files for typescript/intellisense
   "include": ["./*", "./src/**/*", "./tools/**/*"]
 }

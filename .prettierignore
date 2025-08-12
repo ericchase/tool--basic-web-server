@@ -9,5 +9,13 @@ bun.lock
 *-lock.json
 *-lock.yaml
 
-# up to you whether you want to format the resulting files
+# processor bundles
+tools/core/bundle/*
+tools/core-web/bundle/*
+
+##
+## Repo Specific
+##
+
+# up to you whether you want to format the public folder
 public/

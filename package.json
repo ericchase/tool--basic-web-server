@@ -1,13 +1,10 @@
 {
-  "dependencies": {
-    "pg": "^8.16.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/bun": "^1.2.19",
-    "@types/pg": "^8.15.5"
+    "@types/bun": "1.2.20"
   },
   "scripts": {
-    "format": "bun run tools/format.ts",
+    "format": "bunx prettier --write .",
     "start": "bun run tools/start.ts"
   },
   "type": "module"
