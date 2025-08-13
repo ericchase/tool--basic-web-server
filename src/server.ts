@@ -1,5 +1,4 @@
 import { ServerWebSocket } from 'bun';
-import web_console from '../console.html';
 import { query } from './db.js';
 import { Core_Console_Log } from './lib/ericchase/Core_Console_Log.js';
 import { NODE_PATH } from './lib/ericchase/NodePlatform.js';
@@ -23,7 +22,7 @@ function createServer(hostname: string, port: number) {
     port,
     routes: {
       '/': Response.redirect('/public'),
-      '/console': web_console,
+      '/console': new Response(Bun.file('./console.html')),
       '/database/query': {
         async OPTIONS() {
           return new Response(undefined, {
@@ -49,7 +48,7 @@ function createServer(hostname: string, port: number) {
                 'Content-Type': 'application/json',
               },
             });
-          } catch (error: any) {
+          } catch (error) {
             Core_Console_Log(error);
             return Response.json('Internal Server Error', {
               headers: {
@@ -193,7 +192,7 @@ async function async_tryStartServer(hostname: string, port: number) {
     let error_code: 'EADDRINUSE' | 'EBADHOST' | undefined = undefined;
     if (error !== null && typeof error === 'object') {
       if ('code' in error && error.code === 'EADDRINUSE') error_code = 'EADDRINUSE';
-      if ('message' in error && error.message === 'Failed to start server. Is port 8000 in use?') error_code = 'EADDRINUSE';
+      if ('message' in error && error.message === `Failed to start server. Is port ${port} in use?`) error_code = 'EADDRINUSE';
     }
     if (error_code === 'EADDRINUSE') {
       if (await async_testLocalhostServer(port)) {
