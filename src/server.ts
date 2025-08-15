@@ -17,7 +17,6 @@ Bun.env.PUBLIC_PATH = PREFERRED_PUBLIC_PATH;
 interface WebSocketData {}
 function createServer(hostname: string, port: number) {
   const server = Bun.serve({
-    development: false,
     hostname,
     port,
     routes: {
@@ -253,5 +252,9 @@ export async function async_analyzeBody(req: Request | Response) {
   } catch (_) {}
   return data;
 }
+
+process.on('SIGTERM', async () => {
+  process.exit(2); // 2 for shutdown
+});
 
 await async_tryStartServer(PREFERRED_HOSTNAME, PREFERRED_PORT);

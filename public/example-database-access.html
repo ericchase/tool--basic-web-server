@@ -16,16 +16,16 @@
 
     <script>
       (async function () {
-        // try {
-        //   console.log('Try GET Request');
-        //   // we expect this to fail, because our fake database allows POST requests only
-        //   const response = await fetch('http://localhost:8000/database/query', { method: 'GET' });
-        //   if (response.headers.get('content-type').includes('application/json')) {
-        //     console.log('-- JSON:', await response.json());
-        //   } else {
-        //     console.log('-- TEXT:', await response.text());
-        //   }
-        // } catch (err) {}
+        try {
+          console.log('Try GET Request');
+          // we expect this to fail, because our fake database allows POST requests only
+          const response = await fetch('http://localhost:8000/database/query', { method: 'GET' });
+          if (response.headers.get('content-type').includes('application/json')) {
+            console.log('-- JSON:', await response.json());
+          } else {
+            console.log('-- TEXT:', await response.text());
+          }
+        } catch (err) {}
 
         await sendQuery('CREATE TABLE IF NOT EXISTS orders(id INT PRIMARY KEY, status TEXT NOT NULL);');
         await sendQuery('INSERT INTO orders(id, status) VALUES($1, $2);', ['0', 'Done']);
