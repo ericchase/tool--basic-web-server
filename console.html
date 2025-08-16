@@ -15,12 +15,10 @@
         line-height: 1.42857143;
         margin: 20px 30px;
       }
-
       .row {
         display: flex;
         gap: 5px;
       }
-
       .column {
         display: flex;
         flex-direction: column;
@@ -28,11 +26,10 @@
       }
     </style>
   </head>
-
   <body>
     <div class="row">
       <div class="column">
-        <a id="self-link" href="http://localhost:8000/">http://localhost:8000/</a>
+        <a id="self-link" href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>
         <span id="status">Server running!</span>
         <button id="restart">Restart</button>
         <div class="vspace-10"></div>
@@ -45,44 +42,35 @@
         <div id="file-list"></div>
       </div>
     </div>
-
     <script>
       const url = `${location.protocol}//${location.host}`;
       const self_link = document.querySelector('#self-link');
       self_link.setAttribute('href', url);
       self_link.innerText = self_link;
-
       function refresh(ms) {
         setTimeout('location.reload(true);', ms);
       }
-
       const restartButton = document.getElementById('restart');
-
       restartButton.addEventListener('click', () => {
-        fetch('/server/restart');
+        fetch('/api/server/restart', { method: 'POST' });
         document.getElementById('status').innerText = 'Restarting...';
         restartButton.toggleAttribute('disabled', true);
         shutdownButton.toggleAttribute('disabled', true);
         refresh(500);
       });
-
       const shutdownButton = document.getElementById('shutdown');
-
       shutdownButton.addEventListener('click', () => {
-        fetch('/server/shutdown');
+        fetch('/api/server/shutdown', { method: 'POST' });
         document.getElementById('status').innerText = 'Shutting down...';
         restartButton.toggleAttribute('disabled', true);
         shutdownButton.toggleAttribute('disabled', true);
-
         const refreshButton = document.createElement('button');
         refreshButton.innerText = 'Refresh';
         refreshButton.addEventListener('click', () => refresh(0));
         document.body.querySelector('div').append();
       });
-
       const fileListDiv = document.getElementById('file-list');
-
-      fetch('/server/list')
+      fetch('/api/server/list', { method: 'POST' })
         .then((response) => response.json())
         .then((json) => {
           json.forEach((path) => {
@@ -91,7 +79,6 @@
             fileListDiv.appendChild(resourceDiv);
           });
         });
-
       // add height to 'vspace-' divs
       Array.from(document.querySelectorAll('[class*="vspace-"]')).forEach((el) => {
         const [_, size] = Array.from(el.classList)
