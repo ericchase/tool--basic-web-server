@@ -21,14 +21,14 @@ class SERVER {
         '/': Response.redirect(HOMEPAGE),
         '/console': {
           // the console needs to be on server root path
-          async GET(req) {
+          GET(req) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               return new Response(Bun.file('./console.html'));
             });
           },
         },
         '/api/database/query': {
-          async OPTIONS(req) {
+          OPTIONS(req) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               const res = RES.OK();
               // res.headers.append('Access-Control-Allow-Credentials', 'true');
@@ -43,7 +43,7 @@ class SERVER {
               return res;
             });
           },
-          async POST(req) {
+          POST(req) {
             return HOOK_RES.Async_CatchInternalServerError(async () => {
               const { text, values } = await req.json();
               const res = RES.OK_JSON(await query(text, values));
@@ -55,14 +55,14 @@ class SERVER {
           },
         },
         '/api/server/list': {
-          async POST(req) {
+          POST(req) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               return SERVER.Async_GetResourceListing();
             });
           },
         },
         '/api/server/restart': {
-          async POST(req) {
+          POST(req) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               Core_Console_Log('Restarting...');
               setTimeout(() => {
@@ -73,7 +73,7 @@ class SERVER {
           },
         },
         '/api/server/shutdown': {
-          async POST(req) {
+          POST(req) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               Core_Console_Log('Shutting down...');
               setTimeout(() => {
@@ -84,7 +84,7 @@ class SERVER {
           },
         },
         '/api/websockets/reload': {
-          async POST(req, server) {
+          POST(req, server) {
             return HOOK_RES.Async_CatchInternalServerError(() => {
               server.publish('ws', 'reload');
               return RES.OK();
@@ -264,7 +264,7 @@ class RES {
   }
 }
 
-process.on('SIGTERM', async () => {
+process.on('SIGTERM', () => {
   process.exit(2); // 2 for shutdown
 });
 

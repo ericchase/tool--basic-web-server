@@ -10,9 +10,10 @@ Bun.spawnSync(['bun', 'install'], {
 let server_process: Bun.Subprocess<'ignore', 'inherit', 'inherit'> | undefined = undefined;
 
 process.on('SIGTERM', async () => {
-  if (server_process) {
+  if (server_process !== undefined) {
     server_process.kill('SIGTERM');
     await server_process.exited;
+    server_process = undefined;
   }
   process.exit(0);
 });
