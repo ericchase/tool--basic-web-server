@@ -1,8 +1,6 @@
 {
   "dependencies": {},
-  "devDependencies": {
-    "@types/bun": "1.2.20"
-  },
+  "devDependencies": {},
   "scripts": {
     "format": "bunx prettier --write .",
     "start": "bun run tools/start.ts"
