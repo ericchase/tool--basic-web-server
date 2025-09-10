@@ -94,7 +94,6 @@ class SERVER {
         '/*': (req, server) => {
           // websockets upgrade
           if (server.upgrade(req) === true) {
-            console.log(req.method);
             return undefined;
           }
           return HOOK_RES.Async_CatchInternalServerError(async () => {
