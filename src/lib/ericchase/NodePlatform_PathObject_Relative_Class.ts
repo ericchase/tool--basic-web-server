@@ -5,6 +5,15 @@ export class Class_NodePlatform_PathObject_Relative_Class {
   name = '';
   ext = ''; // includes dot
 
+  /**
+   * Effectively returns `${this.name}${this.ext}`. Commonly used to get file
+   * name plus file extension. The result is similar to calling top(), but some
+   * edge cases may exist.
+   */
+  get basename(): string {
+    return this.name + this.ext;
+  }
+
   os_api: typeof NODE_PATH.win32 | typeof NODE_PATH.posix;
   constructor(public os: 'win32' | 'posix') {
     if (os === 'win32') {
@@ -97,6 +106,13 @@ export class Class_NodePlatform_PathObject_Relative_Class {
     }
     this.overwrite(...segments);
     return removed;
+  }
+
+  /**
+   * Gets the last segment from the path.
+   */
+  top(): string {
+    return this.split().slice(-1)[0]!;
   }
 
   /**
